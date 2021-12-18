@@ -39,10 +39,10 @@ void main(void)
     TRISCbits.TRISC7 = 1; //RX
     TRISCbits.TRISC6 = 0; //TX
     PORTB = 0;
-    //COMUNICA��O LETRA(SERIAL)=> EXIBI��O LETRA E C�DIGO MORSE(LCD)
     TRISD =0x00;
     for(;;)
     {
+        //orientações iniciais ao usuário
         lcdCommand(L_CLR);
         lcdCommand(L_L1);
         lcdString("qual a operacao?");
@@ -52,11 +52,15 @@ void main(void)
         lcdString("1 letra->morse");
         lcdCommand(L_L2);
         lcdString("2 morse->letra");
+        
+        //recepção da opção por serial
         op=serial_rx(0);
         if(op=='1'){
+            //COMUNICAÇÃO LETRA(SERIAL)=> EXIBIÇÃO LETRA E CÓDIGO MORSE(LCD)
             lcdCommand(L_CLR);
             lcdCommand(L_L1);
             lcdString("qual a letra?");
+            //recepção da letra pelo usuário
             tmp = serial_rx(0);
             lcdCommand(L_CLR);
             lcdCommand(L_L1);
@@ -67,17 +71,19 @@ void main(void)
             lcdCommand(L_L2);
             lcdString("MORSE: ");
             lcdPosition(1, 6);
-            atraso_ms(500);       
+            atraso_ms(500);
+            //verificação pela função letramorse e print do código referente
             letramorse(tmp);
             atraso_ms(3000);
             
         }
-        //CODIGO MORSE PELO SERIAL ==> EXIBI��O LCD
+        //CODIGO MORSE PELO SERIAL ==> EXIBIÇÃO LCD
         if(op=='2'){
           lcdCommand(L_CLR);
           lcdCommand(L_L1);
           lcdString("MORSE: ");
-          lcdPosition(0,6);       
+          lcdPosition(0,6);
+          //passagem de cada caracter do código para um vetor e exibição da sonoridade de acordo com o mesmo
           cod[0]=serial_rx(0);
           apitar(cod[0]);
           lcdChar(cod[0]);
@@ -97,13 +103,14 @@ void main(void)
           lcdCommand(L_L2);
           lcdString("LETRA:");
           lcdPosition(1,6);
+          //análise do código e exibição da letra através da função morseletra
           morseletra(cod);
           atraso_ms(3000);
           
           lcdCommand(L_CLR);
           lcdCommand(L_L1);
           
-          //EXIBI��O USANDO LEDS PORTD
+          //EXIBIÇÃO USANDO LEDS PORTD
           lcdString("codigo em leds");2
           lcdCommand(L_L2);
           lcdString("------------>>");
